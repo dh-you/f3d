@@ -2,7 +2,7 @@
 sudo apt upgrade
 sudo apt install build-essential git git-lfs cmake libvtk9-dev
 </code></pre></div></div> <p>Note: Ubuntu 24.04 / Debian 12 provides VTK version 9.1 but f3d requires VTK 9.2.6 at minimum, so building and installing vtk from source is suggested. Look at Windows build instruction for inspiration if needed.</p> <h4 id="fedoracentosredhat"> <a href="#fedoracentosredhat" class="anchor-heading" aria-labelledby="fedoracentosredhat"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Fedora/Centos/RedHat </h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum update
-sudo yum install make automake gcc gcc-c++ kernel-devel git git-lfs cmake vtk
+sudo dnf install make automake gcc gcc-c++ kernel-devel git git-lfs cmake vtk-devel
 </code></pre></div></div> <h4 id="arch-linux"> <a href="#arch-linux" class="anchor-heading" aria-labelledby="arch-linux"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Arch Linux </h4> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo pacman -Syu
 sudo pacman -S base-devel git git-lfs cmake vtk nlohmann-json hdf5 netcdf fmt verdict openmpi glew ospray libxcursor
 </code></pre></div></div> <h3 id="compile-f3d"> <a href="#compile-f3d" class="anchor-heading" aria-labelledby="compile-f3d"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Compile F3D </h3> <p>Open a terminal.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir f3d
