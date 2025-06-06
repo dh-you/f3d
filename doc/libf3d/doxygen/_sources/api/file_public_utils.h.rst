@@ -38,6 +38,8 @@ Includes
 
 - ``map``
 
+- ``optional``
+
 - ``regex``
 
 - ``sstream``

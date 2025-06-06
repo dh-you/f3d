@@ -363,6 +363,31 @@ document.write(`
 <dd><p>Class containing useful static functions. </p>
 <p>A class containing useful static functions unrelated to other classes. </p>
 <div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp enum-class">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils11KnownFolderE">
+<span id="_CPPv3N3f3d5utils11KnownFolderE"></span><span id="_CPPv2N3f3d5utils11KnownFolderE"></span><span class="target" id="classf3d_1_1utils_1aebad957764dffbf22565e30997402037"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">KnownFolder</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><a class="headerlink" href="#_CPPv4N3f3d5utils11KnownFolderE" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Enumeration of supported Windows known folders </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils11KnownFolder14ROAMINGAPPDATAE">
+<span id="_CPPv3N3f3d5utils11KnownFolder14ROAMINGAPPDATAE"></span><span id="_CPPv2N3f3d5utils11KnownFolder14ROAMINGAPPDATAE"></span><span class="target" id="classf3d_1_1utils_1aebad957764dffbf22565e30997402037ae38588db6e73d4680ec6a0fb2717b85b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ROAMINGAPPDATA</span></span></span><a class="headerlink" href="#_CPPv4N3f3d5utils11KnownFolder14ROAMINGAPPDATAE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils11KnownFolder12LOCALAPPDATAE">
+<span id="_CPPv3N3f3d5utils11KnownFolder12LOCALAPPDATAE"></span><span id="_CPPv2N3f3d5utils11KnownFolder12LOCALAPPDATAE"></span><span class="target" id="classf3d_1_1utils_1aebad957764dffbf22565e30997402037a26e533b6cb5cf77f7d0a48c2e45598f7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">LOCALAPPDATA</span></span></span><a class="headerlink" href="#_CPPv4N3f3d5utils11KnownFolder12LOCALAPPDATAE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils11KnownFolder8PICTURESE">
+<span id="_CPPv3N3f3d5utils11KnownFolder8PICTURESE"></span><span id="_CPPv2N3f3d5utils11KnownFolder8PICTURESE"></span><span class="target" id="classf3d_1_1utils_1aebad957764dffbf22565e30997402037a7aa9c13a2316c4a661679ecb863b3775"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PICTURES</span></span></span><a class="headerlink" href="#_CPPv4N3f3d5utils11KnownFolder8PICTURESE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils12textDistanceENSt11string_viewENSt11string_viewE">
@@ -418,6 +443,18 @@ document.write(`
 </ul>
 </p>
 <p>Throws a <code class="docutils literal notranslate"><a class="reference internal" href="structf3d_1_1utils_1_1glob__exception.html#structf3d_1_1utils_1_1glob__exception"><span class="std std-ref"><span class="pre">utils::glob_exception</span></span></a></code> if a character class or alternation is not closed or the expression ends with an escape. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils6getEnvERKNSt6stringE">
+<span id="_CPPv3N3f3d5utils6getEnvERKNSt6stringE"></span><span id="_CPPv2N3f3d5utils6getEnvERKNSt6stringE"></span><span id="f3d::utils::getEnv__ssCR"></span><span class="target" id="classf3d_1_1utils_1a79dd2ab7d2021779d80b14dbfc7520d1"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getEnv</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">env</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3f3d5utils6getEnvERKNSt6stringE" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Get an environment variable value, returns std::nullopt if not set </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils14getKnownFolderE11KnownFolder">
+<span id="_CPPv3N3f3d5utils14getKnownFolderE11KnownFolder"></span><span id="_CPPv2N3f3d5utils14getKnownFolderE11KnownFolder"></span><span id="f3d::utils::getKnownFolder__KnownFolder"></span><span class="target" id="classf3d_1_1utils_1a19f45d7340b90d124a7bef05d82acbaf"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">optional</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getKnownFolder</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4N3f3d5utils11KnownFolderE" title="f3d::utils::KnownFolder"><span class="n"><span class="pre">KnownFolder</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">knownFolder</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3f3d5utils14getKnownFolderE11KnownFolder" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Get an Windows known folder, returns std::nullopt in case of error. Return std::nullopt on non-Windows platforms. </p>
 </dd></dl>
 
 </div>
