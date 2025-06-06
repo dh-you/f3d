@@ -153,6 +153,7 @@
 <li class="toctree-l2"><a class="reference internal" href="structf3d_1_1scene_1_1load__failure__exception.html">Struct scene::load_failure_exception</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structf3d_1_1type__access__exception.html">Struct type_access_exception</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structf3d_1_1type__construction__exception.html">Struct type_construction_exception</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structf3d_1_1utils_1_1glob__exception.html">Struct utils::glob_exception</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structf3d_1_1utils_1_1string__template_1_1lookup__error.html">Struct string_template::lookup_error</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structf3d_1_1utils_1_1tokenize__exception.html">Struct utils::tokenize_exception</a></li>
 <li class="toctree-l2"><a class="reference internal" href="structf3d_1_1vector3__t.html">Struct vector3_t</a></li>
@@ -347,6 +348,7 @@ document.write(`
 <section id="nested-types">
 <h3>Nested Types<a class="headerlink" href="#nested-types" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
+<li><p><a class="reference internal" href="structf3d_1_1utils_1_1glob__exception.html#exhale-struct-structf3d-1-1utils-1-1glob-exception"><span class="std std-ref">Struct utils::glob_exception</span></a></p></li>
 <li><p><a class="reference internal" href="classf3d_1_1utils_1_1string__template.html#exhale-class-classf3d-1-1utils-1-1string-template"><span class="std std-ref">Class utils::string_template</span></a></p></li>
 <li><p><a class="reference internal" href="structf3d_1_1utils_1_1string__template_1_1lookup__error.html#exhale-struct-structf3d-1-1utils-1-1string-template-1-1lookup-error"><span class="std std-ref">Struct string_template::lookup_error</span></a></p></li>
 <li><p><a class="reference internal" href="structf3d_1_1utils_1_1tokenize__exception.html#exhale-struct-structf3d-1-1utils-1-1tokenize-exception"><span class="std std-ref">Struct utils::tokenize_exception</span></a></p></li>
@@ -402,7 +404,37 @@ document.write(`
 </p>
 </dd></dl>
 
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils11globToRegexENSt11string_viewEc">
+<span id="_CPPv3N3f3d5utils11globToRegexENSt11string_viewEc"></span><span id="_CPPv2N3f3d5utils11globToRegexENSt11string_viewEc"></span><span id="f3d::utils::globToRegex__std::string_view.c"></span><span class="target" id="classf3d_1_1utils_1a31985a8c903ca9880f66e48e0b2cdd99"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">globToRegex</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string_view</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">glob</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pathSeparator</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="sc"><span class="pre">'/'</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3f3d5utils11globToRegexENSt11string_viewEc" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>Converts a glob expression to a regular expression. When a glob contains <code class="docutils literal notranslate"><span class="pre">**</span></code>, the <code class="docutils literal notranslate"><span class="pre">pathSeparator</span></code> (<code class="docutils literal notranslate"><span class="pre">/</span></code> by default) is used to help generate the regular expression.</p>
+<p>It handles the following glob features:<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">*</span></code>: Matches zero or more characters (except path separators when also using <code class="docutils literal notranslate"><span class="pre">**</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">?</span></code>: Matches exactly one character (except path separators when also using <code class="docutils literal notranslate"><span class="pre">**</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[...]</span></code>: Character class, matches any of the given characters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[!...]</span></code> or <code class="docutils literal notranslate"><span class="pre">[^...]</span></code>: Negated character class, matches none of the given characters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{a,b,c}</span></code>: Alternation, matches any of the given comma-separated patterns</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">**</span></code>: Matches any number of characters including path separators</p></li>
+</ul>
+</p>
+<p>Throws a <code class="docutils literal notranslate"><a class="reference internal" href="structf3d_1_1utils_1_1glob__exception.html#structf3d_1_1utils_1_1glob__exception"><span class="std std-ref"><span class="pre">utils::glob_exception</span></span></a></code> if a character class or alternation is not closed or the expression ends with an escape. </p>
+</dd></dl>
+
 </div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils14glob_exceptionE">
+<span id="_CPPv3N3f3d5utils14glob_exceptionE"></span><span id="_CPPv2N3f3d5utils14glob_exceptionE"></span><span id="f3d::utils::glob_exception"></span><span class="target" id="structf3d_1_1utils_1_1glob__exception"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">glob_exception</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">f3d</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="class_structf3d_1_1exception.html#_CPPv4N3f3d9exceptionE" title="f3d::exception"><span class="n"><span class="pre">exception</span></span></a><a class="headerlink" href="#_CPPv4N3f3d5utils14glob_exceptionE" title="Permalink to this definition">#</a><br /></dt>
+<dd><p>An exception that can be thrown by globToRegex </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils14glob_exception14glob_exceptionERKNSt6stringE">
+<span id="_CPPv3N3f3d5utils14glob_exception14glob_exceptionERKNSt6stringE"></span><span id="_CPPv2N3f3d5utils14glob_exception14glob_exceptionERKNSt6stringE"></span><span id="f3d::utils::glob_exception::glob_exception__ssCR"></span><span class="target" id="structf3d_1_1utils_1_1glob__exception_1aabe348542f8fb983670e0871892166b9"></span><span class="k"><span class="pre">explicit</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">glob_exception</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">what</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="s"><span class="pre">&quot;&quot;</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N3f3d5utils14glob_exception14glob_exceptionERKNSt6stringE" title="Permalink to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N3f3d5utils15string_templateE">
 <span id="_CPPv3N3f3d5utils15string_templateE"></span><span id="_CPPv2N3f3d5utils15string_templateE"></span><span id="f3d::utils::string_template"></span><span class="target" id="classf3d_1_1utils_1_1string__template"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">string_template</span></span></span><a class="headerlink" href="#_CPPv4N3f3d5utils15string_templateE" title="Permalink to this definition">#</a><br /></dt>

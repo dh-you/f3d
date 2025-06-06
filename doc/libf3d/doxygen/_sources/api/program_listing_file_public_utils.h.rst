@@ -37,9 +37,16 @@ Program Listing for File utils.h
      [[nodiscard]] static std::filesystem::path collapsePath(
        const std::filesystem::path& path, const std::filesystem::path& baseDirectory = {});
    
+     [[nodiscard]] static std::string globToRegex(std::string_view glob, char pathSeparator = '/');
+   
      struct tokenize_exception : public exception
      {
        explicit tokenize_exception(const std::string& what = "");
+     };
+   
+     struct glob_exception : public exception
+     {
+       explicit glob_exception(const std::string& what = "");
      };
    
      class string_template
