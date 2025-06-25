@@ -21,7 +21,7 @@ ctest
 <span class="nb">cd </span>dev
 <span class="nb">mkdir </span>vtk
 <span class="nb">cd </span>vtk
-git clone <span class="nt">--depth</span> 1 <span class="nt">--branch</span> v9.4.2 https://gitlab.kitware.com/vtk/vtk.git src
+git clone <span class="nt">--depth</span> 1 <span class="nt">--branch</span> v9.5.0 https://gitlab.kitware.com/vtk/vtk.git src
 <span class="nb">mkdir </span>build
 <span class="nb">mkdir install
 cd</span> ..
@@ -42,7 +42,7 @@ cmake <span class="nt">-DCMAKE_INSTALL_PREFIX</span><span class="o">=</span>../i
 cmake <span class="nt">--build</span> <span class="nb">.</span> <span class="nt">-j</span> 16 <span class="nt">--config</span> Debug
 cmake <span class="nt">--install</span> <span class="nb">.</span> <span class="nt">--config</span> Debug
 </code></pre></div></div> <p>Note: These commands will take a while.</p> <h4 id="add-vtk-libraries-to-the-path"> <a href="#add-vtk-libraries-to-the-path" class="anchor-heading" aria-labelledby="add-vtk-libraries-to-the-path"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Add VTK libraries to the PATH </h4> <ul> <li>Search for “Environment variables” in Windows menu and open associated control panel</li> <li>Click on “Environment variables..” button</li> <li>Double click on “Path”</li> <li>Click on “New” and write “C:\dev\vtk\install\bin”</li> <li>Press Ok</li> <li>Press Ok</li> <li>Press Ok</li> </ul> <h4 id="build-f3d"> <a href="#build-f3d" class="anchor-heading" aria-labelledby="build-f3d"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Build F3D </h4> <ul> <li>Open x64 Native Tools Command Prompt for VS 2022</li> </ul> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>C:<span class="se">\d</span>ev<span class="se">\f</span>3d<span class="se">\b</span>uild
-cmake <span class="nt">-DVTK_DIR</span><span class="o">=</span>C:/dev/vtk/install/lib/cmake/vtk-9.4 ../src
+cmake <span class="nt">-DVTK_DIR</span><span class="o">=</span>C:/dev/vtk/install/lib/cmake/vtk-9.5 ../src
 cmake <span class="nt">--build</span> <span class="nb">.</span> <span class="nt">--config</span> Debug
 </code></pre></div></div> <h4 id="run"> <a href="#run" class="anchor-heading" aria-labelledby="run"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Run </h4> <ul> <li>Open a new file manager window</li> <li>Double click on the <code class="language-plaintext highlighter-rouge">C:\dev\f3d\build\bin_Debug\f3d.exe</code> executable</li> </ul> <h3 id="running-the-test-suite-optional-1"> <a href="#running-the-test-suite-optional-1" class="anchor-heading" aria-labelledby="running-the-test-suite-optional-1"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Running the test suite (optional) </h3> <ul> <li>Open x64 Native Tools Command Prompt for VS 2022</li> </ul> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd C:\dev\f3d\build
 cmake -DBUILD_TESTING=ON .
