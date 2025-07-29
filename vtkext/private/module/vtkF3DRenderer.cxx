@@ -62,6 +62,10 @@
 #include <vtksys/MD5.h>
 #include <vtksys/SystemTools.hxx>
 
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 20250513)
+#include <vtkGridAxesActor3D.h>
+#endif
+
 #if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 2, 20221220)
 #include <vtkSphericalHarmonics.h>
 #endif
@@ -266,6 +270,11 @@ void vtkF3DRenderer::Initialize()
   this->AddActor(this->GridActor);
   this->AddActor(this->SkyboxActor);
   this->AddActor(this->UIActor);
+
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 20250513)
+  this->AddActor(this->GridAxesActor);
+  this->GridAxesActor->SetUseBounds(false);
+#endif
 
   this->GridConfigured = false;
   this->CheatSheetConfigured = false;
@@ -710,6 +719,78 @@ void vtkF3DRenderer::ConfigureGridUsingCurrentActors()
 
   this->GridActor->SetVisibility(show);
   this->ResetCameraClippingRange();
+}
+
+//----------------------------------------------------------------------------
+void vtkF3DRenderer::ShowAxesGrid([[maybe_unused]] bool show)
+{
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 20250513)
+  if (this->AxesGridVisible != show)
+  {
+    this->AxesGridVisible = show;
+    this->RenderPassesConfigured = false;
+    this->GridAxesConfigured = false;
+    this->CheatSheetConfigured = false;
+  }
+#endif
+}
+
+//----------------------------------------------------------------------------
+void vtkF3DRenderer::ConfigureGridAxesUsingCurrentActors()
+{
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 20250513)
+  bool show = this->AxesGridVisible;
+  if (show)
+  {
+    double* up = this->GetEnvironmentUp();
+    double* right = this->GetEnvironmentRight();
+    double front[3];
+    vtkMath::Cross(right, up, front);
+
+    vtkNew<vtkMatrix4x4> upMatrix;
+    const double m[16] = {
+      right[0], right[1], right[2], 0, //
+      up[0], up[1], up[2], 0,          //
+      front[0], front[1], front[2], 0, //
+      0, 0, 0, 1,                      //
+    };
+    upMatrix->DeepCopy(m);
+    vtkNew<vtkMatrix4x4> upMatrixInv;
+    upMatrixInv->DeepCopy(upMatrix);
+    upMatrixInv->Transpose();
+
+    double orientation[3];
+    vtkTransform::GetOrientation(orientation, upMatrixInv);
+    const vtkBoundingBox bbox = this->ComputeVisiblePropOrientedBounds(upMatrix);
+
+    if (!bbox.IsValid())
+    {
+      show = false;
+    }
+    else
+    {
+      this->GridAxesActor->SetOrientation(orientation);
+      this->GridAxesActor->SetVisibility(true);
+
+      double center[4] = { 0, 0, 0, 1 };
+      bbox.GetCenter(center);
+
+      this->GridAxesActor->SetPosition(center);
+
+      double a, b, c, x, y, z;
+      bbox.GetBounds(a, b, c, x, y, z);
+      GridAxesActor->SetGridBounds(a, b, c, x, y, z);
+
+      GridAxesActor->SetXTitle("X Axis");
+      GridAxesActor->SetYTitle("Y Axis");
+      GridAxesActor->SetZTitle("Z Axis");
+
+      this->GridAxesConfigured = true;
+    }
+  }
+  this->GridAxesActor->SetVisibility(show);
+
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -1249,17 +1330,6 @@ void vtkF3DRenderer::ConfigureHDRISkybox()
 //----------------------------------------------------------------------------
 void vtkF3DRenderer::ConfigureTextActors()
 {
-  // Dynamic text color
-  double textColor[3];
-  if (this->IsBackgroundDark())
-  {
-    textColor[0] = textColor[1] = textColor[2] = 0.9;
-  }
-  else
-  {
-    textColor[0] = textColor[1] = textColor[2] = 0.2;
-  }
-
   // Font
   std::string fontFileStr;
   if (this->FontFile.has_value())
@@ -1658,42 +1728,50 @@ void vtkF3DRenderer::SetUseTrackball(bool use)
 }
 
 //----------------------------------------------------------------------------
-void vtkF3DRenderer::SetRotationAxis(RotationAxis axis)
+void vtkF3DRenderer::SetRotationAxis(bool use, const std::vector<double>& direction)
 {
-  if (this->RotationMode != axis)
+  std::array<double, 3> prev = { RotationDirection[0], RotationDirection[1], RotationDirection[2] };
+  std::array<double, 3> curr = { direction[0], direction[1], direction[2] };
+
+  std::array<double, 3> x = { 1.0, 0.0, 0.0 };
+  std::array<double, 3> y = { 0.0, 1.0, 0.0 };
+  std::array<double, 3> z = { 0.0, 0.0, 1.0 };
+
+  if (use != this->UseRotationAxis || curr != prev)
   {
-    this->RotationMode = axis;
-    this->UseRotationAxis = (axis != vtkF3DRenderer::RotationAxis::FREE);
+    this->UseRotationAxis = use;
+
+    this->RotationDirection[0] = direction[0];
+    this->RotationDirection[1] = direction[1];
+    this->RotationDirection[2] = direction[2];
+    
+    this->MovementVector[0] = 1.0;
+    this->MovementVector[1] = 0.0;
+    
+    if (curr == x)
+    {
+      this->RotationAxis[0] = 0.0;
+      this->RotationAxis[1] = 1.0;
+      this->RotationAxis[2] = 0.0;
+    } else if (curr == y)
+    {
+      this->RotationAxis[0] = 1.0;
+      this->RotationAxis[1] = 0.0;
+      this->RotationAxis[2] = 0.0;
+
+      this->MovementVector[0] = 0.0;
+      this->MovementVector[1] = -1.0;
+    }
+    else if (curr == z)
+    {
+      this->RotationAxis[0] = 0.0;
+      this->RotationAxis[1] = 0.0;
+      this->RotationAxis[2] = 1.0;
+
+      this->MovementVector[0] = -1.0;
+      this->MovementVector[1] = 0.0;
+    }
     this->CheatSheetConfigured = false;
-
-    const double* sourceVector = nullptr;
-    double movement[2] = {};
-
-    if (axis == vtkF3DRenderer::RotationAxis::FREE)
-    {
-      return;
-    }
-    else if (axis == vtkF3DRenderer::RotationAxis::X_AXIS)
-    {
-      sourceVector = this->UpVector;
-      movement[0] = 1;
-    }
-    else if (axis == vtkF3DRenderer::RotationAxis::Y_AXIS)
-    {
-      sourceVector = this->RightVector;
-      movement[1] = -1;
-    }
-    else if (axis == vtkF3DRenderer::RotationAxis::Z_AXIS)
-    {
-      sourceVector = this->FrontVector;
-      movement[0] = -1;
-    }
-
-    this->RotationVector[0] = sourceVector[0];
-    this->RotationVector[1] = sourceVector[1];
-    this->RotationVector[2] = sourceVector[2];
-    this->MovementVector[0] = movement[0];
-    this->MovementVector[1] = movement[1];
   }
 }
 
@@ -1750,6 +1828,11 @@ void vtkF3DRenderer::UpdateActors()
   if (!this->TextActorsConfigured)
   {
     this->ConfigureTextActors();
+  }
+
+  if (!this->GridAxesConfigured)
+  {
+    this->ConfigureGridAxesUsingCurrentActors();
   }
 
   if (!this->RenderPassesConfigured)
@@ -1868,14 +1951,6 @@ int vtkF3DRenderer::UpdateLights()
   }
 
   return lightCount;
-}
-
-//----------------------------------------------------------------------------
-bool vtkF3DRenderer::IsBackgroundDark()
-{
-  double luminance =
-    0.299 * this->Background[0] + 0.587 * this->Background[1] + 0.114 * this->Background[2];
-  return this->HDRISkyboxVisible ? true : luminance < 0.5;
 }
 
 //----------------------------------------------------------------------------
@@ -2131,7 +2206,7 @@ void vtkF3DRenderer::ConfigureActorsProperties()
     if (this->TexturesTransform.has_value())
     {
       const std::vector<double> texTransform = this->TexturesTransform.value();
-      double transform[] = {                                    //
+      const double transform[] = {                              //
         texTransform[0], texTransform[1], texTransform[2], 0.0, //
         texTransform[3], texTransform[4], texTransform[5], 0.0, //
         texTransform[6], texTransform[7], texTransform[8], 0.0, //
@@ -2733,6 +2808,7 @@ void vtkF3DRenderer::ConfigureScalarBarActorForColoring(
   scalarBar->SetWidth(0.8);
   scalarBar->SetHeight(0.07);
   scalarBar->SetPosition(0.1, 0.01);
+  scalarBar->SetMaximumNumberOfColors(512);
 }
 
 //----------------------------------------------------------------------------

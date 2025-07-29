@@ -16,6 +16,7 @@
 
 #include <vtkLight.h>
 #include <vtkOpenGLRenderer.h>
+#include <vtkVersion.h>
 
 #include <filesystem>
 #include <map>
@@ -26,6 +27,7 @@ namespace fs = std::filesystem;
 class vtkDiscretizableColorTransferFunction;
 class vtkColorTransferFunction;
 class vtkCornerAnnotation;
+class vtkGridAxesActor3D;
 class vtkImageReader2;
 class vtkOrientationMarkerWidget;
 class vtkScalarBarActor;
@@ -48,23 +50,13 @@ public:
     SSAA
   };
 
-  /**
-   * Enum listing possible rotation modes.
-   */
-  enum RotationAxis
-  {
-    FREE,
-    X_AXIS,
-    Y_AXIS,
-    Z_AXIS
-  };
-
   ///@{
   /**
    * Set visibility of different actors
    */
   void ShowAxis(bool show);
   void ShowGrid(bool show);
+  void ShowAxesGrid(bool show);
   void ShowEdge(const std::optional<bool>& show);
   void ShowTimer(bool show);
   void ShowMetaData(bool show);
@@ -139,10 +131,10 @@ public:
   /**
    * Set/Get RotationAxis
    */
-  void SetRotationAxis(RotationAxis axis);  
-  vtkGetVector3Macro(RotationVector, double);
-  vtkGetVector2Macro(MovementVector, double);
+  void SetRotationAxis(bool use, const std::vector<double>& direction);  
   vtkGetMacro(UseRotationAxis, bool);
+  vtkGetVector3Macro(RotationAxis, double);
+  vtkGetVector2Macro(MovementVector, double);
 
    /**
    * Reimplemented to configure:
@@ -444,8 +436,6 @@ private:
 
   void ReleaseGraphicsResources(vtkWindow* w) override;
 
-  bool IsBackgroundDark();
-
   /**
    * Configure meta data actor visibility and content
    */
@@ -487,6 +477,11 @@ private:
    * Configure the grid
    */
   void ConfigureGridUsingCurrentActors();
+
+  /**
+   * Configure the Grid Axes actor
+   */
+  void ConfigureGridAxesUsingCurrentActors();
 
   /**
    * Configure the different render passes
@@ -537,6 +532,11 @@ private:
 
   vtkSmartPointer<vtkOrientationMarkerWidget> AxisWidget;
 
+  // Does vtk version support GridAxesActor
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 20250513)
+  vtkNew<vtkGridAxesActor3D> GridAxesActor;
+#endif
+
   vtkNew<vtkActor> GridActor;
   vtkNew<vtkSkybox> SkyboxActor;
   vtkNew<vtkF3DUIActor> UIActor;
@@ -546,6 +546,7 @@ private:
   bool CheatSheetConfigured = false;
   bool ActorsPropertiesConfigured = false;
   bool GridConfigured = false;
+  bool GridAxesConfigured = false;
   bool RenderPassesConfigured = false;
   bool LightIntensitiesConfigured = false;
   bool TextActorsConfigured = false;
@@ -561,6 +562,9 @@ private:
   bool GridVisible = false;
   bool GridAbsolute = false;
   bool AxisVisible = false;
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 4, 20250513)
+  bool AxesGridVisible = false;
+#endif
   std::optional<bool> EdgeVisible;
   bool TimerVisible = false;
   bool FilenameVisible = false;
@@ -581,10 +585,10 @@ private:
   std::optional<bool> UseOrthographicProjection = false;
   bool UseTrackball = false;
   bool InvertZoom = false;
-  double RotationVector[3] = {};
-  double MovementVector[2] = {};
   bool UseRotationAxis = false;
-  RotationAxis RotationMode = RotationAxis::FREE;
+  double RotationDirection[3] = { 0.0, 0.0, 0.0 };
+  double RotationAxis[3] = { 0.0, 0.0, 0.0 };
+  double MovementVector[2] = { 0.0, 0.0 };
 
   int RaytracingSamples = 0;
   double UpVector[3] = { 0.0, 1.0, 0.0 };
