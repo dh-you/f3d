@@ -1735,49 +1735,20 @@ void vtkF3DRenderer::SetUseTrackball(bool use)
 }
 
 //----------------------------------------------------------------------------
-void vtkF3DRenderer::SetRotationAxis(bool use, const std::vector<double>& direction)
+void vtkF3DRenderer::SetRotationAxis(bool use, const std::vector<double>& axis)
 {
-  std::array<double, 3> prev = { RotationDirection[0], RotationDirection[1], RotationDirection[2] };
-  std::array<double, 3> curr = { direction[0], direction[1], direction[2] };
-
-  std::array<double, 3> x = { 1.0, 0.0, 0.0 };
-  std::array<double, 3> y = { 0.0, 1.0, 0.0 };
-  std::array<double, 3> z = { 0.0, 0.0, 1.0 };
+  std::array<double, 3> prev = { this->RotationAxis[0], this->RotationAxis[1],
+    this->RotationAxis[2] };
+  std::array<double, 3> curr = { axis[0], axis[1], axis[2] };
 
   if (use != this->UseRotationAxis || curr != prev)
   {
     this->UseRotationAxis = use;
 
-    this->RotationDirection[0] = direction[0];
-    this->RotationDirection[1] = direction[1];
-    this->RotationDirection[2] = direction[2];
-    
-    this->MovementVector[0] = 1.0;
-    this->MovementVector[1] = 0.0;
-    
-    if (curr == x)
-    {
-      this->RotationAxis[0] = y[0];
-      this->RotationAxis[1] = y[1];
-      this->RotationAxis[2] = y[2];
-    } else if (curr == y)
-    {
-      this->RotationAxis[0] = x[0];
-      this->RotationAxis[1] = x[1];
-      this->RotationAxis[2] = x[2];
-
-      this->MovementVector[0] = 0.0;
-      this->MovementVector[1] = -1.0;
-    }
-    else if (curr == z)
-    {
-      this->RotationAxis[0] = z[0];
-      this->RotationAxis[1] = z[1];
-      this->RotationAxis[2] = z[2];
-
-      this->MovementVector[0] = -1.0;
-      this->MovementVector[1] = 0.0;
-    }
+    this->RotationAxis[0] = axis[0];
+    this->RotationAxis[1] = axis[1];
+    this->RotationAxis[2] = axis[2];
+        
     this->CheatSheetConfigured = false;
   }
 }
@@ -2943,12 +2914,18 @@ void vtkF3DRenderer::CycleFieldForColoring()
 //----------------------------------------------------------------------------
 void vtkF3DRenderer::ConfigureActorTextureTransform(vtkActor* actorBase, const double* matrix)
 {
+#if VTK_VERSION_NUMBER >= VTK_VERSION_CHECK(9, 5, 20250802)
+  vtkInformationDoubleVectorKey* generalTextureTransformKey = vtkProp::GENERAL_TEXTURE_TRANSFORM();
+#else
+  vtkInformationDoubleVectorKey* generalTextureTransformKey = vtkProp::GeneralTextureTransform();
+#endif
+
   vtkInformation* info = actorBase->GetPropertyKeys();
   if (info)
   {
     /**
      * The actor already has a property key dictionary
-     * Check that GeneralTextureTransform exists and combine,
+     * Check that the general texture transform exists and combine them together,
      * Otherwise set the property to our texture transform
      */
 
@@ -2958,13 +2935,13 @@ void vtkF3DRenderer::ConfigureActorTextureTransform(vtkActor* actorBase, const d
       finalTransform[i] = matrix[i];
     }
 
-    if (auto transformPtr = info->Get(vtkProp::GeneralTextureTransform()))
+    if (auto transformPtr = info->Get(generalTextureTransformKey))
     {
       // We need to create 4x4 vtk matrixes from the arrays
       vtkNew<vtkMatrix4x4> matTransform;
       matTransform->Multiply4x4(transformPtr, matrix, finalTransform);
     }
-    info->Set(vtkProp::GeneralTextureTransform(), finalTransform, 16);
+    info->Set(generalTextureTransformKey, finalTransform, 16);
   }
   else
   {
@@ -2972,7 +2949,7 @@ void vtkF3DRenderer::ConfigureActorTextureTransform(vtkActor* actorBase, const d
      * No dictionary found, add new dictionary with transform
      */
     vtkNew<vtkInformation> properties;
-    properties->Set(vtkProp::GeneralTextureTransform(), matrix, 16);
+    properties->Set(generalTextureTransformKey, matrix, 16);
     actorBase->SetPropertyKeys(properties);
   }
 }
